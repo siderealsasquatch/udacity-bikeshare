@@ -4,6 +4,7 @@
 #
 
 import os
+import pandas as pd
 
 
 class CsvData:
@@ -15,7 +16,7 @@ class CsvData:
         '''
         Initialize CsvData object with empty list.
         '''
-        self._filenames = []
+        self._filenames = {}
         self._csv_files_available = True
         self._get_filenames()
 
@@ -24,9 +25,10 @@ class CsvData:
         Check for csv files in current directory and add them to the _filename
         list. If there are no csv files, set _csv_files_available to False.
         '''
-        for csvfile in os.listdir("."):
-            if csvfile.endswith(".csv"):
-                self._filenames.append(csvfile)
+        for f in os.listdir("."):
+            if f.endswith(".csv"):
+                key = f[:-4].replace("_", " ").title()
+                self._filenames[key] = f
 
         if len(self._filenames) == 0:
             self._csv_files_available = False
@@ -39,19 +41,19 @@ class CsvData:
         '''
         return self._csv_files_available
 
-    def show_data(self, city, filter_mode=None, filter_by=None):
+    def get_data(self, city, chunk_size=1000):
         '''
-        Return data that is optionally filtered by month or day.
+        Return iterator of pandas data frame. This iterator object should
+        produce data from the specified file in chunks.
 
         Parameters
 
+            chunk_size: size of the chunks of data produced by the pandas
+                        iterator.
+
             city: name of the city whose bikeshare data is to be displayed.
                   Three choices: "Chicago", "New York", and "Washington".
-
-            filter_mode: determines how the data is to be filtered. 'm' for
-                         month, 'd' for day, and None to eschew filtering.
-
-            filter_by: narrows down the data by either month (e.g. "January";
-                       only first six months) or day of week (e.g. "Monday")
         '''
-        pass
+        filename = self._filenames[city]
+        df_iterator = pd.read_csv(filename, iterator=True, chunksize=chunk_size)
+        return df_iterator
