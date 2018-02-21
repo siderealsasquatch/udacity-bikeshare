@@ -41,10 +41,26 @@ class CsvData:
         '''
         return self._csv_files_available
 
-    def get_data(self, city, chunk_size=1000):
+    def get_city_names(self):
         '''
-        Return iterator of pandas data frame. This iterator object should
-        produce data from the specified file in chunks.
+        Return a list of city names corresponding to the csv file names
+        currently stored in the CsvData object.
+        '''
+        return list(self._filenames.keys())
+
+    def _convert_to_dataframe(self, csv_file):
+        '''
+        Convert the specified csv file into a dataframe.
+        '''
+        city_data = pd.read_csv(csv_file,
+                                parse_dates=['Start Time', 'End Time'])
+        return city_data
+
+    def get_data(self, city=None):
+        '''
+        Return dataframe containing data for a specified city. If no city is
+        specified, return a dictionary containing dataframes with data for all
+        cities whose csv files are known to the CsvData object.
 
         Parameters
 
@@ -54,6 +70,10 @@ class CsvData:
             city: name of the city whose bikeshare data is to be displayed.
                   Three choices: "Chicago", "New York", and "Washington".
         '''
-        filename = self._filenames[city]
-        df_iterator = pd.read_csv(filename, iterator=True, chunksize=chunk_size)
-        return df_iterator
+        if city:
+            return self._convert_to_dataframe(city)
+        else:
+            all_city_data = {}
+            for city_name, city_file in self._filenames.items():
+                all_city_data[city_name] = self._convert_to_dataframe(city_file)
+            return all_city_data

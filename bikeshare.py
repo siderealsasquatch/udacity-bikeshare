@@ -4,15 +4,17 @@
 #   thress U.S. cities.
 #
 
+import pandas as pd
+
 from csv_data import CsvData
 
 # Test CsvData class.
 bikeshare_data = CsvData()
-test_iter = bikeshare_data.get_data("Chicago", 100000)
+all_city_data = bikeshare_data.get_data()
 
-if bikeshare_data.csv_files_available():
-    print("Here is the data contained in 'chicago.csv':\n")
-    for chunk in test_iter:
-        print(chunk)
+if len(all_city_data):
+    print("Here are the first five lines of each csv file:\n")
+    for city_df in all_city_data.values():
+        print(city_df.head())
 else:
     print("There are no csv files in the current directory.")
