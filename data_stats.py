@@ -29,7 +29,7 @@ class DataStats:
         self._data_is_filtered = False
         self._city_name = None
         # self._filter_mode = None
-        self._filter_term = None
+        # self._filter_term = None
 
     # def set_filter(self, city_name, filter_mode=None, filter_by=None):
         # '''
@@ -39,12 +39,13 @@ class DataStats:
         # self._filter_mode = filter_mode
         # self._filter_by = filter_by
 
-    def filter_data(self, city_name, filter_mode=None, filter_term=None):
+    def filter_data(self, city_name, filter_mode=None):
         '''
-        Filter data for the specified city.
+        Filter data for the specified city by month, day, or not at all.
         '''
-        self._filter_term = filter_term
+        # self._filter_term = filter_term
 
+        # Filter by month or day
         if filter_mode:
             self._data_is_filtered = True
             city_data = self._all_city_data[city_name]
@@ -52,11 +53,12 @@ class DataStats:
             if filter_mode.lower() == 'm':
                 self._filtered_data = city_data.groupby(
                         city_data['Start Time'].dt.month)
-            elif filter_mode.lower() == 'l':
+            elif filter_mode.lower() == 'd':
                 self._filtered_data = city_data.groupby(
                         city_data['Start Time'].dt.day)
         else:
             self._city_name = city_name
+            self._filtered_data = None
             self._data_is_filtered = False
 
     def popular_start_time(self):
@@ -83,11 +85,27 @@ class DataStats:
         '''
         pass
 
-    def counts(self):
+    def counts_gender(self, filter_by=None):
         '''
-        Counts for each user type and gender.
+        Return a dictionary containing counts for each gender.
         '''
-        pass
+        if self._data_is_filtered:
+            counts = self._filtered_data['Gender'].value_counts()
+            return counts.loc[filter_by].to_dict()
+        else:
+            city = self._all_city_data[self._city_name]
+            return city['Gender'].value_counts().to_dict()
+
+    def counts_user(self, filter_by=None):
+        '''
+        Return a dictionary containing counts for each user type.
+        '''
+        if self._data_is_filtered:
+            counts = self._filtered_data['User Type'].value_counts()
+            return counts.loc[filter_by].to_dict()
+        else:
+            city = self._all_city_data[self._city_name]
+            return city['User Type'].value_counts().to_dict()
 
     def birth_years(self):
         '''
