@@ -50,7 +50,7 @@ class DataStats:
                         city_data['Start Time'].dt.day)
         else:
             self._city_name = city_name
-            self._filtered_data = None
+            # self._filtered_data = None
             self._data_is_filtered = False
 
     def popular_start_time(self):
@@ -65,17 +65,42 @@ class DataStats:
         '''
         pass
 
-    def popular_station(self):
+    def popular_stations(self, filter_by=None):
         '''
         Determine the most popular start and end stations.
         '''
-        pass
+        df_slice = ['Start Station', 'End Station']
 
-    def popular_trip(self):
+        if self._data_is_filtered:
+            pop_stations = {}
+            for sl in df_slice:
+                counts = self._filtered_data[sl].value_counts()
+                pop_stations[sl] = counts.loc[filter_by].idxmax()
+            return pop_stations
+        else:
+            city = self._all_city_data[self._city_name]
+            return city[df_slice].apply(pd.value_counts).idxmax().to_dict()
+
+    def popular_trip(self, filter_by=None):
         '''
-        Determine the most popular trip.
+        Return a dictionary containing the start and end destinations of the
+        most popular trip.
         '''
-        pass
+        labels = ['Start Station', 'End Station']
+        trip = ""
+
+        if self._data_is_filtered:
+            counts = self._filtered_data['Trip'].value_counts()
+            trip = counts.loc[filter_by].idxmax()
+        else:
+            city = self._all_city_data[self._city_name]
+            trip = city['Trip'].value_counts().idxmax()
+
+        popular_trip = {lab: street
+                        for lab, street
+                        in zip(labels, trip.split("_"))}
+
+        return popular_trip
 
     def counts_gender(self, filter_by=None):
         '''
@@ -101,7 +126,8 @@ class DataStats:
 
     def birth_years(self, filter_by=None):
         '''
-        Determine the latest, earliest, and most popular birth years.
+        Return a dictionary containing the latest, earliest, and most popular
+        birth years.
         '''
         year_types = ['Latest', 'Earliest', 'Popular']
         years = []

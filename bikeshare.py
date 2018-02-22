@@ -15,35 +15,57 @@ bikeshare_stats = DataStats(bikeshare_data.get_data())
 def print_counts(birth_year_data, desc=None):
     if desc:
         for d, byd in zip(desc, birth_year_data):
-            print("\nBirth year stats for {}".format(d))
+            print("\nStation stats for {}".format(d))
             for k, v in byd.items():
                 print("{} Year: {}".format(k, v))
     else:
-        print("\nUnfiltered birth year stats.")
+        print("\nUnfiltered station stats.")
         for k, v in birth_year_data.items():
             print("{} Year: {}".format(k, v))
 
-# Filter data by month and get birth year statistics for Feb and March
+# Filter data by month and get popular stop and end stations, and popular trip
+# for April and June
 bikeshare_stats.filter_data('Chicago', 'm')
-months = ['February', 'March']
-birth_year_feb = bikeshare_stats.birth_years(2)
-birth_year_march = bikeshare_stats.birth_years(4)
-birth_year_month = [birth_year_feb, birth_year_march]
+months = ['April', 'June']
+pop_stations_april = bikeshare_stats.popular_stations(4)
+pop_stations_june = bikeshare_stats.popular_stations(6)
+pop_stations_month = [pop_stations_april, pop_stations_june]
 
-print_counts(birth_year_month, months)
+print('Popular Start and End Stations')
+print_counts(pop_stations_month, months)
 
-# Filter data by day and get gender and user type data for the 5th and 20th of
+pop_trip_april = bikeshare_stats.popular_trip(4)
+pop_trip_june = bikeshare_stats.popular_trip(6)
+pop_trip_month = [pop_trip_april, pop_trip_june]
+
+print('\nPopular trips')
+print_counts(pop_trip_month, months)
+
+# Filter data by day and get gender and user type data for the 7th and 12th of
 # each month
 bikeshare_stats.filter_data('Chicago', 'd')
-days = ['5th', '20th']
-birth_year05 = bikeshare_stats.birth_years(5)
-birth_year20 = bikeshare_stats.birth_years(20)
-birth_year_day = [birth_year05, birth_year20]
+days = ['7th', '12th']
+pop_stations07 = bikeshare_stats.popular_stations(7)
+pop_stations12 = bikeshare_stats.popular_stations(12)
+pop_station_day = [pop_stations07, pop_stations12]
 
-print_counts(birth_year_day, days)
+print('Popular Start and End Stations')
+print_counts(pop_station_day, days)
+
+pop_trip07 = bikeshare_stats.popular_trip(7)
+pop_trip12 = bikeshare_stats.popular_trip(12)
+pop_trip_day = [pop_trip07, pop_trip12]
+
+print('\nPopular trips')
+print_counts(pop_trip_day, days)
 
 # Don't filter data and get total counts of gender and user type
 bikeshare_stats.filter_data('Chicago')
-birth_year_no_filter = bikeshare_stats.birth_years()
+pop_stations_no_filter = bikeshare_stats.popular_stations()
+pop_trip_no_filter = bikeshare_stats.popular_trip()
 
-print_counts(birth_year_no_filter)
+print('Popular Start and End Stations')
+print_counts(pop_stations_no_filter)
+
+print('\nPopular trips')
+print_counts(pop_trip_no_filter)

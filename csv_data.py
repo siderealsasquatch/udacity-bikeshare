@@ -56,6 +56,8 @@ class CsvData:
         '''
         city_data = pd.read_csv(csv_file,
                                 parse_dates=['Start Time', 'End Time'])
+        city_data['Trip'] = city_data['Start Station'] + "_" + \
+            city_data["End Station"]
         return city_data
 
     def get_data(self, city=None):
