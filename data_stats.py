@@ -31,14 +31,6 @@ class DataStats:
         # self._filter_mode = None
         # self._filter_term = None
 
-    # def set_filter(self, city_name, filter_mode=None, filter_by=None):
-        # '''
-        # Set the filter mode and filter criteria.
-        # '''
-        # self._city_name = city_name
-        # self._filter_mode = filter_mode
-        # self._filter_by = filter_by
-
     def filter_data(self, city_name, filter_mode=None):
         '''
         Filter data for the specified city by month, day, or not at all.
@@ -107,8 +99,33 @@ class DataStats:
             city = self._all_city_data[self._city_name]
             return city['User Type'].value_counts().to_dict()
 
-    def birth_years(self):
+    def birth_years(self, filter_by=None):
         '''
         Determine the latest, earliest, and most popular birth years.
         '''
-        pass
+        year_types = ['Latest', 'Earliest', 'Popular']
+        years = []
+
+        if self._data_is_filtered:
+            # Get latest and earliest year
+            year_min_max = self._filtered_data['Birth Year'].agg(['min', 'max'])
+            years.extend(list(year_min_max.loc[filter_by]))
+
+            # Get most popular year
+            year_counts = self._filtered_data['Birth Year'].value_counts()
+            years.append(year_counts.loc[filter_by].idxmax())
+        else:
+            city = self._all_city_data[self._city_name]
+
+            # Get latest and earliest year
+            years.extend(list(city['Birth Year'].agg(['min', 'max'])))
+
+            # Get most popular year
+            years.append(city['Birth Year'].value_counts().idxmax())
+
+        # Combine year_types and years into dict
+        year_stats = {year_type: int(year)
+                      for year_type, year
+                      in zip(year_types, years)}
+
+        return year_stats

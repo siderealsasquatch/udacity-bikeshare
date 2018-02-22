@@ -4,8 +4,6 @@
 #   thress U.S. cities.
 #
 
-import pandas as pd
-
 from csv_data import CsvData
 from data_stats import DataStats
 
@@ -14,53 +12,38 @@ bikeshare_data = CsvData()
 bikeshare_stats = DataStats(bikeshare_data.get_data())
 
 # Function to print results
-def print_counts(gender_data, user_type_data, desc=None):
-    c_types = ["Gender", "User Type"]
-    comb_data = [gender_data, user_type_data]
+def print_counts(birth_year_data, desc=None):
     if desc:
-        for c_type, c_data in zip(c_types, comb_data):
-            for d, counts in zip(desc, c_data):
-                print("{} counts in {}".format(c_type, d))
-                count_str = ""
-                for k, v in counts.items():
-                    count_str += "{}: {}\n".format(k, v)
-                print(count_str)
+        for d, byd in zip(desc, birth_year_data):
+            print("\nBirth year stats for {}".format(d))
+            for k, v in byd.items():
+                print("{} Year: {}".format(k, v))
     else:
-        for c_type, c_data in zip(c_types, comb_data):
-            print("Total {} counts".format(c_type))
-            count_str = ""
-            for k, v in c_data.items():
-                count_str += "{}: {}\n".format(k, v)
-            print(count_str)
+        print("\nUnfiltered birth year stats.")
+        for k, v in birth_year_data.items():
+            print("{} Year: {}".format(k, v))
 
-# Filter data by month and get gender and user type data for January and May
+# Filter data by month and get birth year statistics for Feb and March
 bikeshare_stats.filter_data('Chicago', 'm')
-months = ['January', 'May']
-gender_counts_jan = bikeshare_stats.counts_gender(1)
-gender_counts_may = bikeshare_stats.counts_gender(5)
-gender_counts_month = [gender_counts_jan, gender_counts_may]
-user_type_counts_jan = bikeshare_stats.counts_user(1)
-user_type_counts_may = bikeshare_stats.counts_user(5)
-user_type_counts_month = [user_type_counts_jan, user_type_counts_may]
+months = ['February', 'March']
+birth_year_feb = bikeshare_stats.birth_years(2)
+birth_year_march = bikeshare_stats.birth_years(4)
+birth_year_month = [birth_year_feb, birth_year_march]
 
-print_counts(gender_counts_month, user_type_counts_month, months)
+print_counts(birth_year_month, months)
 
-# Filter data by day and get gender and user type data for the 1st and 15th of
+# Filter data by day and get gender and user type data for the 5th and 20th of
 # each month
 bikeshare_stats.filter_data('Chicago', 'd')
-days = ['1st', '15th']
-gender_counts01 = bikeshare_stats.counts_gender(1)
-gender_counts15 = bikeshare_stats.counts_gender(15)
-gender_counts_day = [gender_counts01, gender_counts15]
-user_type_counts01 = bikeshare_stats.counts_user(1)
-user_type_counts15 = bikeshare_stats.counts_user(15)
-user_type_counts_day = [user_type_counts01, user_type_counts15]
+days = ['5th', '20th']
+birth_year05 = bikeshare_stats.birth_years(5)
+birth_year20 = bikeshare_stats.birth_years(20)
+birth_year_day = [birth_year05, birth_year20]
 
-print_counts(gender_counts_day, user_type_counts_day, days)
+print_counts(birth_year_day, days)
 
 # Don't filter data and get total counts of gender and user type
 bikeshare_stats.filter_data('Chicago')
-gender_counts_total = bikeshare_stats.counts_gender()
-user_type_counts_total = bikeshare_stats.counts_user()
+birth_year_no_filter = bikeshare_stats.birth_years()
 
-print_counts(gender_counts_total, user_type_counts_total)
+print_counts(birth_year_no_filter)
