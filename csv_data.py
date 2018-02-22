@@ -14,13 +14,15 @@ class CsvData:
 
     def __init__(self):
         '''
-        Initialize CsvData object with empty list.
+        Initialize CsvData object with dictionary of the names of the csv files
+        in the current directory. If there are none, initialize empty
+        dictionary.
         '''
         self._filenames = {}
         self._csv_files_available = True
-        self._get_filenames()
+        self.get_filenames()
 
-    def _get_filenames(self):
+    def get_filenames(self):
         '''
         Check for csv files in current directory and add them to the _filename
         list. If there are no csv files, set _csv_files_available to False.
@@ -70,8 +72,11 @@ class CsvData:
             city: name of the city whose bikeshare data is to be displayed.
                   Three choices: "Chicago", "New York", and "Washington".
         '''
+        # Might need to raise custom error if _filenames is empty
+        # Or just have method return empty dict
         if city:
-            return self._convert_to_dataframe(city)
+            city_file = self._filenames[city]
+            return self._convert_to_dataframe(city_file)
         else:
             all_city_data = {}
             for city_name, city_file in self._filenames.items():
