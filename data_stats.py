@@ -114,8 +114,7 @@ class DataStats:
         if self._data_is_filtered:
             pop_stations = {}
             for sl in df_slice:
-                counts = self._filtered_data[sl].value_counts()
-                pop_stations[sl] = counts.loc[filter_by].idxmax()
+                pop_stations[sl] = self._get_filtered_pop(sl, filter_by)
             return pop_stations
         else:
             city = self._all_city_data[self._city_name]
@@ -130,8 +129,7 @@ class DataStats:
         trip = ""
 
         if self._data_is_filtered:
-            counts = self._filtered_data['Trip'].value_counts()
-            trip = counts.loc[filter_by].idxmax()
+            trip = self._get_filtered_pop('Trip', filter_by)
         else:
             city = self._all_city_data[self._city_name]
             trip = city['Trip'].value_counts().idxmax()
@@ -148,7 +146,11 @@ class DataStats:
         '''
         if self._data_is_filtered:
             counts = self._filtered_data['Gender'].value_counts()
-            return counts.loc[filter_by].to_dict()
+            if self._filter_mode == 'm':
+                return counts.loc[filter_by].to_dict()
+            elif self._filter_mode == 'd':
+                f1, f2 = filter_by
+                return counts.loc[f1, f2].to_dict()
         else:
             city = self._all_city_data[self._city_name]
             return city['Gender'].value_counts().to_dict()
@@ -159,7 +161,11 @@ class DataStats:
         '''
         if self._data_is_filtered:
             counts = self._filtered_data['User Type'].value_counts()
-            return counts.loc[filter_by].to_dict()
+            if self._filter_mode == 'm':
+                return counts.loc[filter_by].to_dict()
+            elif self._filter_mode == 'd':
+                f1, f2 = filter_by
+                return counts.loc[f1, f2].to_dict()
         else:
             city = self._all_city_data[self._city_name]
             return city['User Type'].value_counts().to_dict()
@@ -175,11 +181,16 @@ class DataStats:
         if self._data_is_filtered:
             # Get latest and earliest year
             year_min_max = self._filtered_data['Birth Year'].agg(['min', 'max'])
-            years.extend(list(year_min_max.loc[filter_by]))
+            if self._filter_mode == 'm':
+                years.extend(list(year_min_max.loc[filter_by]))
+            elif self._filter_mode == 'd':
+                f1, f2 = filter_by
+                years.extend(list(year_min_max.loc[f1, f2]))
 
             # Get most popular year
-            year_counts = self._filtered_data['Birth Year'].value_counts()
-            years.append(year_counts.loc[filter_by].idxmax())
+            # year_counts = self._filtered_data['Birth Year'].value_counts()
+            # years.append(year_counts.loc[filter_by].idxmax())
+            years.append(self._get_filtered_pop('Birth Year', filter_by))
         else:
             city = self._all_city_data[self._city_name]
 
@@ -194,4 +205,5 @@ class DataStats:
                       for year_type, year
                       in zip(year_types, years)}
 
+        # return year_stats
         return year_stats
