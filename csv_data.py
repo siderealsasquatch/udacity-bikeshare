@@ -5,7 +5,7 @@
 
 import os
 import pandas as pd
-
+import calendar as cal
 
 class CsvData:
     '''
@@ -58,6 +58,11 @@ class CsvData:
                                 parse_dates=['Start Time', 'End Time'])
         city_data['Trip'] = city_data['Start Station'] + "_" + \
             city_data["End Station"]
+        city_data['Month'] = city_data['Start Time'].dt.month.apply(
+                lambda x: cal.month_name[x])
+        city_data['Weekday'] = city_data['Start Time'].dt.weekday_name
+        city_data['Hour'] = city_data['Start Time'].dt.hour
+
         return city_data
 
     def get_data(self, city=None):

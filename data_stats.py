@@ -5,18 +5,12 @@
 
 import pandas as pd
 import datetime as dt
-import calendar as cal
 
 
 class DataStats:
     '''
     A class for computing basic descriptive statistics on bikeshare data.
     '''
-
-    _mon_str_conversions = {mon_name: mon_int
-                            for mon_int, mon_name
-                            in enumerate(cal.month_abbr)
-                            if mon_int > 0}
 
     def __init__(self, all_city_data):
         '''
@@ -28,7 +22,7 @@ class DataStats:
         self._filtered_data = None
         self._data_is_filtered = False
         self._city_name = None
-        # self._filter_mode = None
+        self._filter_mode = None
         # self._filter_term = None
 
     def filter_data(self, city_name, filter_mode=None):
@@ -36,6 +30,7 @@ class DataStats:
         Filter data for the specified city by month, day, or not at all.
         '''
         # self._filter_term = filter_term
+        self._filter_mode = filter_mode
 
         # Filter by month or day
         if filter_mode:
@@ -43,21 +38,59 @@ class DataStats:
             city_data = self._all_city_data[city_name]
 
             if filter_mode.lower() == 'm':
-                self._filtered_data = city_data.groupby(
-                        city_data['Start Time'].dt.month)
+                self._filtered_data = city_data.groupby('Month')
             elif filter_mode.lower() == 'd':
-                self._filtered_data = city_data.groupby(
-                        city_data['Start Time'].dt.day)
+                self._filtered_data = city_data.groupby(['Month', 'Weekday'])
         else:
             self._city_name = city_name
             # self._filtered_data = None
             self._data_is_filtered = False
 
-    def popular_start_time(self):
+    def _get_filtered_stats(self, filter_by=None):
+        pass
+
+    def popular_start_time(self, filter_by=None):
         '''
         Calculate stats related to start time.
         '''
-        pass
+        pop_start_time_labs = ['Month', 'Weekday', 'Hour']
+        pop_start_time_data = []
+
+        if self._data_is_filtered:
+            if self._filter_mode == 'm':
+                # Get pop weekday and hour
+                for col in pop_start_time_labs[1:]:
+                    counts = self._filtered_data[col].value_counts()
+                    pop_start_time_data.append(counts.loc[filter_by].idxmax())
+
+                stats_for_month = {lab: data for lab, data
+                                   in zip(pop_start_time_labs[1:],
+                                          pop_start_time_data)}
+
+                return stats_for_month
+            if self._filter_mode == 'd':
+                # Get pop hour
+                hr = pop_start_time_labs[-1]
+                f1, f2 = filter_by
+                counts = self._filtered_data[hr].value_counts()
+                pop_start_time_data.append(counts.loc[f1, f2].idxmax())
+
+                stats_for_day = {lab: data for lab, data
+                                 in zip(pop_start_time_labs[-1:],
+                                        pop_start_time_data)}
+
+                return stats_for_day
+        else:
+            # Get pop month, weekday, and hour
+            city = self._all_city_data[self._city_name]
+            for col in pop_start_time_labs:
+                pop_start_time_data.append(city[col].value_counts().idxmax())
+
+            stats_unfiltered = {lab: data for lab, data
+                                in zip(pop_start_time_labs,
+                                       pop_start_time_data)}
+
+            return stats_unfiltered
 
     def trip_duration(self):
         '''
