@@ -37,17 +37,25 @@ class DataStats:
             self._data_is_filtered = True
             city_data = self._all_city_data[city_name]
 
-            if filter_mode.lower() == 'm':
+            if filter_mode == 'm':
                 self._filtered_data = city_data.groupby('Month')
-            elif filter_mode.lower() == 'd':
+            elif filter_mode == 'd':
                 self._filtered_data = city_data.groupby(['Month', 'Weekday'])
         else:
             self._city_name = city_name
             # self._filtered_data = None
             self._data_is_filtered = False
 
-    def _get_filtered_stats(self, filter_by=None):
-        pass
+    def _get_filtered_pop(self, col, filter_by):
+        '''
+        Helper method to retrieve most popular value from filtered data.
+        '''
+        counts = self._filtered_data[col].value_counts()
+        if self._filter_mode == 'm':
+            return counts.loc[filter_by].idxmax()
+        elif self._filter_mode == 'd':
+            f1, f2 = filter_by
+            return counts.loc[f1, f2].idxmax()
 
     def popular_start_time(self, filter_by=None):
         '''
@@ -60,8 +68,8 @@ class DataStats:
             if self._filter_mode == 'm':
                 # Get pop weekday and hour
                 for col in pop_start_time_labs[1:]:
-                    counts = self._filtered_data[col].value_counts()
-                    pop_start_time_data.append(counts.loc[filter_by].idxmax())
+                    pop_start_time_data.append(
+                            self._get_filtered_pop(col, filter_by))
 
                 stats_for_month = {lab: data for lab, data
                                    in zip(pop_start_time_labs[1:],
@@ -71,9 +79,8 @@ class DataStats:
             if self._filter_mode == 'd':
                 # Get pop hour
                 hr = pop_start_time_labs[-1]
-                f1, f2 = filter_by
-                counts = self._filtered_data[hr].value_counts()
-                pop_start_time_data.append(counts.loc[f1, f2].idxmax())
+                pop_start_time_data.append(
+                        self._get_filtered_pop(hr, filter_by))
 
                 stats_for_day = {lab: data for lab, data
                                  in zip(pop_start_time_labs[-1:],
