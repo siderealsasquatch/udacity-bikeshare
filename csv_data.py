@@ -7,6 +7,7 @@ import os
 import pandas as pd
 import calendar as cal
 
+
 class CsvData:
     '''
     A class for obtaining and filtering raw data from csv files.
@@ -78,6 +79,11 @@ class CsvData:
 
             city: name of the city whose bikeshare data is to be displayed.
                   Three choices: "Chicago", "New York", and "Washington".
+
+        Returns
+
+            city_data: Either a dataframe or a dictionary of dataframes each
+                       containing data from csv files.
         '''
         # Might need to raise custom error if _filenames is empty
         # Or just have method return empty dict

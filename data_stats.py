@@ -70,7 +70,18 @@ class DataStats:
 
     def popular_start_time(self, filter_by=None):
         '''
-        Calculate stats related to start time.
+        Calculate the most popular month, day and hour for start time. Return a
+        dictionary containing values for each category. If no statistic is
+        available, 'None' will be assigned for that category.
+
+        Parameters
+
+            filter_by: Name of month or list containing name of month and
+                       weekday depending on the current filter mode.
+
+        Returns
+
+            stats: Dictionary containing the monst popular month, day, and hour.
         '''
         pop_start_time_labs = ['Month', 'Weekday', 'Hour']
         pop_start_time_data = []
@@ -82,37 +93,49 @@ class DataStats:
                     pop_start_time_data.append(
                             self._get_filtered_pop(col, filter_by))
 
-                stats_for_month = {lab: data for lab, data
-                                   in zip(pop_start_time_labs[1:],
-                                          pop_start_time_data)}
+                stats = {lab: data for lab, data
+                         in zip(pop_start_time_labs[1:],
+                                pop_start_time_data)}
 
-                return stats_for_month
             if self._filter_mode == 'd':
                 # Get pop hour
                 hr = pop_start_time_labs[-1]
                 pop_start_time_data.append(
                         self._get_filtered_pop(hr, filter_by))
 
-                stats_for_day = {lab: data for lab, data
-                                 in zip(pop_start_time_labs[-1:],
-                                        pop_start_time_data)}
+                stats = {lab: data for lab, data
+                         in zip(pop_start_time_labs[-1:],
+                                pop_start_time_data)}
 
-                return stats_for_day
         else:
             # Get pop month, weekday, and hour
             city = self._all_city_data[self._city_name]
             for col in pop_start_time_labs:
                 pop_start_time_data.append(city[col].value_counts().idxmax())
 
-            stats_unfiltered = {lab: data for lab, data
-                                in zip(pop_start_time_labs,
-                                       pop_start_time_data)}
+            stats = {lab: data for lab, data
+                     in zip(pop_start_time_labs,
+                            pop_start_time_data)}
 
-            return stats_unfiltered
+        # Assign None to any missing values
+        for lab in pop_start_time_labs:
+            stats.setdefault(lab, None)
+
+        return stats
 
     def trip_duration(self, filter_by=None):
         '''
         Calculate total trip duration and average trip duration.
+
+        Parameters
+
+            filter_by: Name of month or list containing name of month and
+                       weekday depending on the current filter mode.
+
+        Returns
+
+            time_conv: Dictionary containing the total and average trip
+            duration.
         '''
         min_labs = ['Years', 'Months', 'Days', 'Hours', 'Minutes']
         time_labs = ['Total', 'Average']
@@ -151,6 +174,16 @@ class DataStats:
     def popular_stations(self, filter_by=None):
         '''
         Determine the most popular start and end stations.
+
+        Parameters
+
+            filter_by: Name of month or list containing name of month and
+                       weekday depending on the current filter mode.
+
+        Returns
+
+            pop_stations: Dictionary containing the most popular start and end
+            stations.
         '''
         df_slice = ['Start Station', 'End Station']
 
@@ -167,6 +200,16 @@ class DataStats:
         '''
         Return a dictionary containing the start and end destinations of the
         most popular trip.
+
+        Parameters
+
+            filter_by: Name of month or list containing name of month and
+                       weekday depending on the current filter mode.
+
+        Returns
+
+            popular_trip: Dictionary containing the start and end stations of
+                          the most popular trip
         '''
         labels = ['Start Station', 'End Station']
         trip = ""
@@ -186,6 +229,15 @@ class DataStats:
     def counts_gender(self, filter_by=None):
         '''
         Return a dictionary containing counts for each gender.
+
+        Parameters
+
+            filter_by: Name of month or list containing name of month and
+                       weekday depending on the current filter mode.
+
+        Returns
+
+            counts: Dictionary containing the counts for each gender.
         '''
         if self._data_is_filtered:
             counts = self._filtered_data['Gender'].value_counts()
