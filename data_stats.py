@@ -22,28 +22,16 @@ class DataStats:
         self._data_is_filtered = False
         self._city_name = None
         self._filter_mode = None
-        # self._filter_term = None
 
-    def filter_data(self, city_name, filter_mode=None):
+    def _check_columns_exist(self, col):
         '''
-        Filter data for the specified city by month, day, or not at all.
+        Helper method to check if the given columns exist.
         '''
-        # self._filter_term = filter_term
-        self._filter_mode = filter_mode
+        for col in cols:
+            if col not in self._all_city_data[self._city_name].columns:
+                return False
 
-        # Filter by month or day
-        if filter_mode:
-            self._data_is_filtered = True
-            city_data = self._all_city_data[city_name]
-
-            if filter_mode == 'm':
-                self._filtered_data = city_data.groupby('Month')
-            elif filter_mode == 'd':
-                self._filtered_data = city_data.groupby(['Month', 'Weekday'])
-        else:
-            self._city_name = city_name
-            # self._filtered_data = None
-            self._data_is_filtered = False
+        return True
 
     def _get_filtered_pop(self, col, filter_by):
         '''
@@ -67,6 +55,27 @@ class DataStats:
         years, months = divmod(months, 12)
 
         return years, months, days, hours, minutes
+
+    def filter_data(self, city_name, filter_mode=None):
+        '''
+        Filter data for the specified city by month, day, or not at all.
+        '''
+        # self._filter_term = filter_term
+        self._filter_mode = filter_mode
+
+        # Filter by month or day
+        if filter_mode:
+            self._data_is_filtered = True
+            city_data = self._all_city_data[city_name]
+
+            if filter_mode == 'm':
+                self._filtered_data = city_data.groupby('Month')
+            elif filter_mode == 'd':
+                self._filtered_data = city_data.groupby(['Month', 'Weekday'])
+        else:
+            self._city_name = city_name
+            # self._filtered_data = None
+            self._data_is_filtered = False
 
     def popular_start_time(self, filter_by=None):
         '''
@@ -239,6 +248,9 @@ class DataStats:
 
             counts: Dictionary containing the counts for each gender.
         '''
+        if not self._check_columns_exist(['Gender']):
+            return None
+
         if self._data_is_filtered:
             counts = self._filtered_data['Gender'].value_counts()
             if self._filter_mode == 'm':
@@ -264,6 +276,9 @@ class DataStats:
 
             counts: Dictionary containing counts for each user type.
         '''
+        if not self._check_columns_exist(['User Type']):
+            return None
+
         if self._data_is_filtered:
             counts = self._filtered_data['User Type'].value_counts()
             if self._filter_mode == 'm':
@@ -285,6 +300,9 @@ class DataStats:
             filter_by: Name of month or list containing name of month and
                        weekday depending on the current filter mode.
         '''
+        if not self._check_columns_exist(['Birth Year']):
+            return None
+
         year_types = ['Latest', 'Earliest', 'Popular']
         years = []
 
