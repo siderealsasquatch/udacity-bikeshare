@@ -228,7 +228,7 @@ class DataStats:
 
     def counts_gender(self, filter_by=None):
         '''
-        Return a dictionary containing counts for each gender.
+        Determine the total amount of each gender for the current filter level.
 
         Parameters
 
@@ -252,7 +252,17 @@ class DataStats:
 
     def counts_user(self, filter_by=None):
         '''
-        Return a dictionary containing counts for each user type.
+        Determine the total amount of each user type for the current filter
+        leve.
+
+        Parameters
+
+            filter_by: Name of month or list containing name of month and
+                       weekday depending on the current filter mode.
+
+        Returns
+
+            counts: Dictionary containing counts for each user type.
         '''
         if self._data_is_filtered:
             counts = self._filtered_data['User Type'].value_counts()
@@ -267,8 +277,13 @@ class DataStats:
 
     def birth_years(self, filter_by=None):
         '''
-        Return a dictionary containing the latest, earliest, and most popular
-        birth years.
+        Determine the latest, earliest, and most popular birth years for the
+        current filter level.
+
+        Parameters
+
+            filter_by: Name of month or list containing name of month and
+                       weekday depending on the current filter mode.
         '''
         year_types = ['Latest', 'Earliest', 'Popular']
         years = []
@@ -298,5 +313,4 @@ class DataStats:
                       for year_type, year
                       in zip(year_types, years)}
 
-        # return year_stats
         return year_stats
