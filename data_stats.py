@@ -23,7 +23,7 @@ class DataStats:
         self._city_name = None
         self._filter_mode = None
 
-    def _check_columns_exist(self, col):
+    def _check_columns_exist(self, cols):
         '''
         Helper method to check if the given columns exist.
         '''
@@ -60,8 +60,8 @@ class DataStats:
         '''
         Filter data for the specified city by month, day, or not at all.
         '''
-        # self._filter_term = filter_term
         self._filter_mode = filter_mode
+        self._city_name = city_name
 
         # Filter by month or day
         if filter_mode:
@@ -73,8 +73,6 @@ class DataStats:
             elif filter_mode == 'd':
                 self._filtered_data = city_data.groupby(['Month', 'Weekday'])
         else:
-            self._city_name = city_name
-            # self._filtered_data = None
             self._data_is_filtered = False
 
     def popular_start_time(self, filter_by=None):
