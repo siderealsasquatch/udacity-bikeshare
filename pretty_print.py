@@ -33,19 +33,19 @@ class PrettyPrint:
         for i, string in enumerate(header_strings_new):
             if i == 0:
                 print('#' * (longest_string + 4))
-                print('#{s:^{fill}}#'.format(s=' ', fill=longest_string+2))
+                # print('#{s:^{fill}}#'.format(s=' ', fill=longest_string+2))
                 print('#{s:^{fill}}#'.format(s=string,
                     fill=longest_string+2))
-                print('#{s:^{fill}}#'.format(s=' ', fill=longest_string+2))
+                # print('#{s:^{fill}}#'.format(s=' ', fill=longest_string+2))
             elif i == (num_strings-1):
-                print('#{s:^{fill}}#'.format(s=' ', fill=longest_string+2))
+                # print('#{s:^{fill}}#'.format(s=' ', fill=longest_string+2))
                 print(('#' * (longest_string + 4)) + '\n')
             else:
                 if i == 1:
                     print('#{s:-^{fill}}#'.format(s='-',
                         fill=longest_string+2))
-                if i != 3:
-                    print('#{s:^{fill}}#'.format(s=' ', fill=longest_string+2))
+                # if i != 3:
+                    # print('#{s:^{fill}}#'.format(s=' ', fill=longest_string+2))
                 print('#{s:^{fill}}#'.format(s=string,
                     fill=longest_string+2))
 
@@ -54,9 +54,11 @@ class PrettyPrint:
         Helper method to create nice headers for each group of statistics.
         '''
         header_len = len(stat_group)
-        border_edge = '=' * (header_len + 4)
-        print(border_edge)
-        print('={s:^{fill}}='.format(s=stat_group, fill=header_len+1))
+        # border_edge = '=' * (header_len + 4)
+        border_edge = '=' * header_len
+        # print(border_edge)
+        # print('={s:^{fill}}='.format(s=stat_group, fill=header_len+1))
+        print(stat_group)
         print(border_edge)
 
     def _print_stats_from_dict(self, stat_dict):
@@ -64,15 +66,18 @@ class PrettyPrint:
         Helper method to print out the statistics for every method except the
         trip duration stats.
         '''
-        stats_dict_len = len(stat_dict)
-        for i, stats in enumerate(stat_dict.items()):
+        non_none_dict = {k: v for k, v in stat_dict.items() if v is not None}
+        non_none_dict_len = len(non_none_dict)
+        # for i, stats in enumerate(stat_dict.items()):
+        for i, stats in enumerate(non_none_dict.items()):
             time, stat = stats
+
             if i == 0:
-                print("\n{}: {}".format(time, stat))
-            elif i == (stats_dict_len - 1):
+                print("\n{}: {}".format(time, stat), end=' | ')
+            elif i == (non_none_dict_len - 1):
                 print("{}: {}\n".format(time, stat))
             else:
-                print("{}: {}".format(time, stat))
+                print("{}: {}".format(time, stat), end=' | ')
 
     def main_header(self):
         '''
@@ -124,7 +129,19 @@ class PrettyPrint:
         self._fancy_header_stat_group(header)
 
         if stations_stats:
-            pass
+            self._print_stats_from_dict(stations_stats)
+        else:
+            print("There was no data for these particular statistics.\n")
+
+    def show_trip_stats(self, trip_stats=None):
+        '''
+        Display the most popular trip for the current filter options.
+        '''
+        header = 'Most Popular Trip'
+        self._fancy_header_stat_group(header)
+
+        if trip_stats:
+            self._print_stats_from_dict(trip_stats)
         else:
             print("There was no data for these particular statistics.\n")
 
@@ -139,17 +156,35 @@ class PrettyPrint:
         '''
         Display totals for each user type for the current filter options.
         '''
-        pass
+        header = 'Counts of each User Type'
+        self._fancy_header_stat_group(header)
+
+        if user_count_stats:
+            self._print_stats_from_dict(user_count_stats)
+        else:
+            print("There was no data for these particular statistics.\n")
 
     def show_gender_count_stats(self, gender_count_stats=None):
         '''
         Display totals for each gender for the current filter options.
         '''
-        pass
+        header = 'Counts of each Gender'
+        self._fancy_header_stat_group(header)
+
+        if gender_count_stats:
+            self._print_stats_from_dict(gender_count_stats)
+        else:
+            print("There was no data for these particular statistics.\n")
 
     def show_birth_year_stats(self, birth_year_stats=None):
         '''
         Display latest, earliest, and most popular birth years for the current
         filter options.
         '''
-        pass
+        header = 'Latest, Earliest, and most Popular Birth Years'
+        self._fancy_header_stat_group(header)
+
+        if birth_year_stats:
+            self._print_stats_from_dict(birth_year_stats)
+        else:
+            print("There was no data for these particular statistics.\n")

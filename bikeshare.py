@@ -35,31 +35,15 @@ while True:
     birth_years = bikeshare_stats.birth_years(filter_comp)
 
     # Display stats
-    all_stats = [popular_stations,
-                 popular_trip,
-                 trip_duration,
-                 counts_user,
-                 counts_gender,
-                 birth_years]
-
-    all_stat_labs = ["Popular Stations",
-                     "Popular Trip",
-                     "Trip Duration",
-                     "User Type Counts",
-                     "Gender Counts",
-                     "Birth Year Stats"]
-
+    # Still missing trip duration
     pprint.get_filter_options(filter_city, filter_mode, filter_comp)
     pprint.main_header()
     pprint.show_start_time_stats(pop_start_time)
-
-    for stat_lab1, stat_dict in zip(all_stat_labs, all_stats):
-        print("\n{}".format(stat_lab1))
-        if stat_dict is None:
-            print("Stats unavailable.")
-        else:
-            for stat_lab2, stat_val in stat_dict.items():
-                print("{}: {}".format(stat_lab2, stat_val))
+    pprint.show_stations_stats(popular_stations)
+    pprint.show_trip_stats(popular_trip)
+    pprint.show_user_count_stats(counts_user)
+    pprint.show_gender_count_stats(counts_gender)
+    pprint.show_birth_year_stats(birth_years)
 
     print("\nWould you like to quit? Yes or no.")
     again = input("> ").lower()
