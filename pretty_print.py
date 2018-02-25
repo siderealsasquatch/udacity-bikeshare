@@ -73,7 +73,10 @@ class PrettyPrint:
             time, stat = stats
 
             if i == 0:
-                print("\n{}: {}".format(time, stat), end=' | ')
+                if non_none_dict_len == 1:
+                    print("\n{}: {}\n".format(time, stat))
+                else:
+                    print("\n{}: {}".format(time, stat), end=' | ')
             elif i == (non_none_dict_len - 1):
                 print("{}: {}\n".format(time, stat))
             else:
@@ -113,12 +116,15 @@ class PrettyPrint:
         '''
         header = 'Popular Month, Day, and Hour for Start Time'
         self._fancy_header_stat_group(header)
-        # Convert Hour to a datetime object.
 
         if start_time_stats:
-            self._print_stats_from_dict(start_time_stats)
+            start_time_stats_time_format = start_time_stats
+            hour = start_time_stats_time_format['Hour']
+            t = dt.time(hour, 0, 0)
+            start_time_stats_time_format['Hour'] = t.strftime('%H:%M')
+            self._print_stats_from_dict(start_time_stats_time_format)
         else:
-            print("There was no data for these particular statistics.\n")
+            print("\nThere was no data for these particular statistics.\n")
 
     def show_stations_stats(self, stations_stats=None):
         '''
@@ -131,7 +137,7 @@ class PrettyPrint:
         if stations_stats:
             self._print_stats_from_dict(stations_stats)
         else:
-            print("There was no data for these particular statistics.\n")
+            print("\nThere was no data for these particular statistics.\n")
 
     def show_trip_stats(self, trip_stats=None):
         '''
@@ -143,14 +149,39 @@ class PrettyPrint:
         if trip_stats:
             self._print_stats_from_dict(trip_stats)
         else:
-            print("There was no data for these particular statistics.\n")
+            print("\nThere was no data for these particular statistics.\n")
 
     def show_trip_duration_stats(self, trip_duration_stats=None):
         '''
         Display the total and average trip duration for the current filter
         options.
         '''
-        pass
+        header = 'Total and Average Trip Duration'
+        self._fancy_header_stat_group(header)
+
+        if trip_duration_stats:
+            trip_dur_len = len(trip_duration_stats)
+            for i, trip_dat in enumerate(trip_duration_stats.items()):
+                dur_type, dur_dat_dict = trip_dat
+
+                dur_string = "{}\t:: ".format(dur_type)
+                if i == 0:
+                    dur_string = "\n" + dur_string
+
+                dur_dat_dict_len = len(dur_dat_dict)
+                for j, dur_dat in enumerate(dur_dat_dict.items()):
+                    time_category, time = dur_dat
+                    if i == (dur_dat_dict_len - 1):
+                        dur_string += "{}: {}".format(time_category, time)
+                    else:
+                        dur_string += "{}: {} | ".format(time_category, time)
+
+                if i == (trip_dur_len - 1):
+                    dur_string = dur_string + '\n'
+
+                print(dur_string)
+        else:
+            print("\nThere was no data for these particular statistics.\n")
 
     def show_user_count_stats(self, user_count_stats=None):
         '''
@@ -162,7 +193,7 @@ class PrettyPrint:
         if user_count_stats:
             self._print_stats_from_dict(user_count_stats)
         else:
-            print("There was no data for these particular statistics.\n")
+            print("\nThere was no data for these particular statistics.\n")
 
     def show_gender_count_stats(self, gender_count_stats=None):
         '''
@@ -174,7 +205,7 @@ class PrettyPrint:
         if gender_count_stats:
             self._print_stats_from_dict(gender_count_stats)
         else:
-            print("There was no data for these particular statistics.\n")
+            print("\nThere was no data for these particular statistics.\n")
 
     def show_birth_year_stats(self, birth_year_stats=None):
         '''
@@ -187,4 +218,4 @@ class PrettyPrint:
         if birth_year_stats:
             self._print_stats_from_dict(birth_year_stats)
         else:
-            print("There was no data for these particular statistics.\n")
+            print("\nThere was no data for these particular statistics.\n")
