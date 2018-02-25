@@ -13,7 +13,7 @@ from pretty_print import PrettyPrint
 bikeshare_data = CsvData()
 bikeshare_stats = DataStats(bikeshare_data.get_data())
 validator = Validate()
-#pretty = PrettyPrint()
+pprint = PrettyPrint()
 
 # Main loop
 city_names = bikeshare_data.get_city_names()
@@ -53,6 +53,9 @@ while True:
                      "User Type Counts",
                      "Gender Counts",
                      "Birth Year Stats"]
+
+    pprint.get_filter_options(filter_city, filter_mode, filter_comp)
+    pprint.main_header()
 
     for stat_lab1, stat_dict in zip(all_stat_labs, all_stats):
         print("\n{}".format(stat_lab1))

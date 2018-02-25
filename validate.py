@@ -98,8 +98,6 @@ class Validate:
         '''
         Get the month and day depending on the filter mode.
         '''
-        filter_comp = []
-
         if self._filter_mode:
             month_name_user = self._get_month_component()
             if self._filter_mode == 'd':
