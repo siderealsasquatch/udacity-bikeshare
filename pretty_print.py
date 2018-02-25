@@ -37,7 +37,7 @@ class PrettyPrint:
                 print('#{s:^{fill}}#'.format(s=' ', fill=longest_string+2))
             elif i == (num_strings-1):
                 print('#{s:^{fill}}#'.format(s=' ', fill=longest_string+2))
-                print('#' * (longest_string + 4))
+                print(('#' * (longest_string + 4)) + '\n')
             else:
                 if i == 1:
                     print('#{s:-^{fill}}#'.format(s='-',
@@ -47,9 +47,19 @@ class PrettyPrint:
                 print('#{s:^{fill}}#'.format(s=string,
                     fill=longest_string+2))
 
-    def _fancy_header_stat_group(self, stat_type, stats):
+    def _fancy_header_stat_group(self, stat_group):
         '''
         Helper method to create nice headers for each group of statistics.
+        '''
+        header_len = len(stat_group)
+        border_edge = '=' * (header_len + 4)
+        print(border_edge)
+        print('={s:^{fill}}='.format(s=stat_group, fill=header_len+1))
+        print(border_edge)
+
+    def _print_stats_from_dict(self, stat_dict):
+        '''
+        Helper method to print out the statistics for every method except
         '''
         pass
 
@@ -85,7 +95,58 @@ class PrettyPrint:
         '''
         Display the start time statistics using the current filter options.
         '''
+        header = 'Popular Month, Day, and Hour for Start Time'
+        self._fancy_header_stat_group(header)
+        # Convert Hour to a datetime object.
+
         if start_time_stats:
+            stats_dict_len = len(start_time_stats)
+            for i, stats in enumerate(start_time_stats.items()):
+                time, stat = stats
+                if i == 0:
+                    print("\n{}: {}".format(time, stat))
+                elif i == (stats_dict_len - 1):
+                    print("{}: {}\n".format(time, stat))
+                else:
+                    print("{}: {}".format(time, stat))
+        else:
+            print("There was no data for these particular statistics.\n")
+
+    def show_stations_stats(self, stations_stats=None):
+        '''
+        Display the popular start and end stations for the current filter
+        options.
+        '''
+        header = 'Popular Start and End Stations'
+        self._fancy_header_stat_group(header)
+
+        if stations_stats:
             pass
         else:
-            pass
+            print("There was no data for these particular statistics.\n")
+
+    def show_trip_duration_stats(self, trip_duration_stats=None):
+        '''
+        Display the total and average trip duration for the current filter
+        options.
+        '''
+        pass
+
+    def show_user_count_stats(self, user_count_stats=None):
+        '''
+        Display totals for each user type for the current filter options.
+        '''
+        pass
+
+    def show_gender_count_stats(self, gender_count_stats=None):
+        '''
+        Display totals for each gender for the current filter options.
+        '''
+        pass
+
+    def show_birth_year_stats(self, birth_year_stats=None):
+        '''
+        Display latest, earliest, and most popular birth years for the current
+        filter options.
+        '''
+        pass

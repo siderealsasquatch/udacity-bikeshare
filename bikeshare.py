@@ -34,20 +34,15 @@ while True:
     counts_user = bikeshare_stats.counts_user(filter_comp)
     birth_years = bikeshare_stats.birth_years(filter_comp)
 
-    # print(counts_gender)
-    # print(birth_years)
-
     # Display stats
-    all_stats = [pop_start_time,
-                 popular_stations,
+    all_stats = [popular_stations,
                  popular_trip,
                  trip_duration,
                  counts_user,
                  counts_gender,
                  birth_years]
 
-    all_stat_labs = ["Popular Start Time Stats",
-                     "Popular Stations",
+    all_stat_labs = ["Popular Stations",
                      "Popular Trip",
                      "Trip Duration",
                      "User Type Counts",
@@ -56,6 +51,7 @@ while True:
 
     pprint.get_filter_options(filter_city, filter_mode, filter_comp)
     pprint.main_header()
+    pprint.show_start_time_stats(pop_start_time)
 
     for stat_lab1, stat_dict in zip(all_stat_labs, all_stats):
         print("\n{}".format(stat_lab1))
