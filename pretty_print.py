@@ -3,6 +3,8 @@
 #   DataStats objects and displays them in a pleasing manner.
 #
 
+import datetime as dt
+
 
 class PrettyPrint:
     '''
@@ -59,9 +61,18 @@ class PrettyPrint:
 
     def _print_stats_from_dict(self, stat_dict):
         '''
-        Helper method to print out the statistics for every method except
+        Helper method to print out the statistics for every method except the
+        trip duration stats.
         '''
-        pass
+        stats_dict_len = len(stat_dict)
+        for i, stats in enumerate(stat_dict.items()):
+            time, stat = stats
+            if i == 0:
+                print("\n{}: {}".format(time, stat))
+            elif i == (stats_dict_len - 1):
+                print("{}: {}\n".format(time, stat))
+            else:
+                print("{}: {}".format(time, stat))
 
     def main_header(self):
         '''
@@ -100,15 +111,7 @@ class PrettyPrint:
         # Convert Hour to a datetime object.
 
         if start_time_stats:
-            stats_dict_len = len(start_time_stats)
-            for i, stats in enumerate(start_time_stats.items()):
-                time, stat = stats
-                if i == 0:
-                    print("\n{}: {}".format(time, stat))
-                elif i == (stats_dict_len - 1):
-                    print("{}: {}\n".format(time, stat))
-                else:
-                    print("{}: {}".format(time, stat))
+            self._print_stats_from_dict(start_time_stats)
         else:
             print("There was no data for these particular statistics.\n")
 
