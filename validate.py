@@ -40,7 +40,7 @@ class Validate:
                 if city_name_user in city_name.lower():
                     return city_name
 
-            print("That doesn't seem to be correct. Try again.\n")
+            print("That doesn't seem to be correct. Try again.")
 
     def get_filter_mode(self):
         '''
@@ -77,7 +77,7 @@ class Validate:
                 if month_name_user in month_name.lower():
                     return month_name
 
-            print("That doesn't seem correct. Try again.\n")
+            print("That doesn't seem correct. Try again.")
 
     def _get_day_component(self):
         '''
@@ -92,7 +92,7 @@ class Validate:
                 if day_name_user in day_name.lower():
                     return day_name
 
-            print("That doesn't seem correct. Try again.\n")
+            print("That doesn't seem correct. Try again.")
 
     def get_filter_components(self):
         '''

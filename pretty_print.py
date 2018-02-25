@@ -171,10 +171,10 @@ class PrettyPrint:
                 dur_dat_dict_len = len(dur_dat_dict)
                 for j, dur_dat in enumerate(dur_dat_dict.items()):
                     time_category, time = dur_dat
-                    if i == (dur_dat_dict_len - 1):
+                    if j == (dur_dat_dict_len - 1):
                         dur_string += "{}: {}".format(time_category, time)
                     else:
-                        dur_string += "{}: {} | ".format(time_category, time)
+                        dur_string += "{}: {}, ".format(time_category, time)
 
                 if i == (trip_dur_len - 1):
                     dur_string = dur_string + '\n'
