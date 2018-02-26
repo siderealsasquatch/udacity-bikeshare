@@ -32,8 +32,7 @@ while True:
     # Display stats
     bike_funs.display_stats(pprint, filter_options, all_stats)
 
-    print("Would you like to quit? Yes or no.")
-    again = input("> ").lower()
-
-    if again in "yes":
+    # Ask the user if they would like to quit
+    if validator.quit_program():
+        print("\nBye! Hope you found that useful.")
         break
