@@ -5,7 +5,7 @@
 
 import os
 import pandas as pd
-import calendar as cal
+# import calendar as cal
 
 
 class CsvData:
@@ -20,7 +20,7 @@ class CsvData:
         dictionary.
         '''
         self._filenames = {}
-        self._csv_files_available = True
+        self._csv_files_available = None
         self.get_filenames()
 
     def get_filenames(self):
@@ -55,14 +55,24 @@ class CsvData:
         '''
         Convert the specified csv file into a dataframe.
         '''
+        # Get csv file headers and remove unnecessary columns
+        headers = []
+        for col in pd.read_csv(csv_file, nrows=1).columns:
+            if 'unnamed' not in col.lower() and col != 'End Time':
+                headers.append(col)
+
+        # Get dataframe from csv using the headers we just extracted
         city_data = pd.read_csv(csv_file,
-                                parse_dates=['Start Time', 'End Time'])
-        city_data['Trip'] = city_data['Start Station'] + "_" + \
-            city_data["End Station"]
-        city_data['Month'] = city_data['Start Time'].dt.month.apply(
-                lambda x: cal.month_name[x])
+                                usecols=headers,
+                                parse_dates=['Start Time'],
+                                infer_datetime_format=True)
+
+        # Add additional columns for grouping by month, weekday, hour, and trip
+        city_data['Month'] = city_data['Start Time'].dt.month
         city_data['Weekday'] = city_data['Start Time'].dt.weekday_name
         city_data['Hour'] = city_data['Start Time'].dt.hour
+        city_data['Trip'] = city_data['Start Station'] + '_' + \
+                city_data['End Station']
 
         return city_data
 
