@@ -5,13 +5,16 @@
 
 import os
 import pandas as pd
-# import calendar as cal
+import calendar as cal
 
 
 class CsvData:
     '''
     A class for obtaining and filtering raw data from csv files.
     '''
+
+    # A list of all month names with empty string at index 0
+    _month_names = cal.month_name[:7]
 
     def __init__(self):
         '''
@@ -68,12 +71,15 @@ class CsvData:
                                 infer_datetime_format=True)
 
         # Add additional columns for grouping by month, weekday, hour, and trip
-        city_data['Month'] = city_data['Start Time'].dt.month
+        city_data['Month'] = city_data['Start Time'].dt.month.apply(
+                lambda x: self._month_names[x])
         city_data['Weekday'] = city_data['Start Time'].dt.weekday_name
         city_data['Hour'] = city_data['Start Time'].dt.hour
         city_data['Trip'] = city_data['Start Station'] + '_' + \
                 city_data['End Station']
 
+        # Drop Start Time column before returning
+        city_data.drop('Start Time', axis=1, inplace=True)
         return city_data
 
     def get_data(self, city=None):
