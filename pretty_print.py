@@ -115,15 +115,25 @@ class PrettyPrint:
         Display the start time statistics using the current filter options.
         '''
         header = 'Popular Month, Day, and Hour for Start Time'
-        self._fancy_header_stat_group(header)
 
         if start_time_stats:
+            # Convert 'Hour' int to string
             start_time_stats_time_format = start_time_stats
-            hour = start_time_stats_time_format['Hour']
-            t = dt.time(hour, 0, 0)
-            start_time_stats_time_format['Hour'] = t.strftime('%H:%M')
+            start_time_stats_time_format['Hour'] = '{}:00'.format(
+                    start_time_stats_time_format['Hour'])
+
+            # Remove parts of the header string depending on how the data was
+            # filtered
+            if not start_time_stats_time_format['Month']:
+                header = header.replace(',', '').replace(' Month', '')
+            if not start_time_stats_time_format['Weekday']:
+                header = header.replace(' Day and', '')
+
+            # Print new header string
+            self._fancy_header_stat_group(header)
             self._print_stats_from_dict(start_time_stats_time_format)
         else:
+            self._fancy_header_stat_group(header)
             print("\nThere was no data for these particular statistics.\n")
 
     def show_stations_stats(self, stations_stats=None):
