@@ -74,6 +74,7 @@ class DataStats:
                 self._filtered_data = city_data.groupby(['Month', 'Weekday'])
         else:
             self._data_is_filtered = False
+            self._filtered_data = None
 
     def popular_start_time(self, filter_by=None):
         '''
