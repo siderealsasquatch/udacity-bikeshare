@@ -44,17 +44,18 @@ class DataStats:
             f1, f2 = filter_by
             return counts.loc[f1, f2].idxmax()
 
-    def _convert_minutes(self, minutes):
+    def _convert_seconds(self, seconds):
         '''
-        Helper method to convert minutes to years, months, days, hours and
-        minutes.
+        Helper method to convert seconds to years, months, days, hours, minutes
+        and seconds.
         '''
+        minutes, seconds = divmod(seconds, 60)
         hours, minutes = divmod(minutes, 60)
         days, hours = divmod(hours, 24)
         months, days = divmod(days, 30)
         years, months = divmod(months, 12)
 
-        return years, months, days, hours, minutes
+        return years, months, days, hours, minutes, seconds
 
     def filter_data(self, city_name, filter_mode=None):
         '''
@@ -145,36 +146,36 @@ class DataStats:
             time_conv: Dictionary containing the total and average trip
             duration.
         '''
-        min_labs = ['Years', 'Months', 'Days', 'Hours', 'Minutes']
+        div_labs = ['Years', 'Months', 'Days', 'Hours', 'Minutes', 'Seconds']
         time_labs = ['Total', 'Average']
         time_conv = {}
         col = 'Trip Duration'
 
         if self._data_is_filtered:
-            min_mean = 0
-            min_sum = 0
+            sec_mean = 0
+            sec_sum = 0
 
             if self._filter_mode == 'm':
-                min_mean = self._filtered_data[col].mean().loc[filter_by]
-                min_sum = self._filtered_data[col].sum().loc[filter_by]
+                sec_mean = self._filtered_data[col].mean().loc[filter_by]
+                sec_sum = self._filtered_data[col].sum().loc[filter_by]
             elif self._filter_mode == 'd':
                 f1, f2 = filter_by
-                min_mean = self._filtered_data[col].mean().loc[f1, f2]
-                min_sum = self._filtered_data[col].sum().loc[f1, f2]
+                sec_mean = self._filtered_data[col].mean().loc[f1, f2]
+                sec_sum = self._filtered_data[col].sum().loc[f1, f2]
 
-            for lab, minutes in zip(time_labs, [min_sum, min_mean]):
-                convs = self._convert_minutes(int(minutes))
+            for lab, seconds in zip(time_labs, [sec_sum, sec_mean]):
+                convs = self._convert_seconds(int(seconds))
                 time_tmp = {lab: conv for lab, conv
-                            in zip(min_labs, convs)}
+                            in zip(div_labs, convs)}
                 time_conv[lab] = time_tmp
         else:
-            min_mean = self._all_city_data[self._city_name][col].mean()
-            min_sum = self._all_city_data[self._city_name][col].sum()
+            sec_mean = self._all_city_data[self._city_name][col].mean()
+            sec_sum = self._all_city_data[self._city_name][col].sum()
 
-            for lab, minutes in zip(time_labs, [min_sum, min_mean]):
-                convs = self._convert_minutes(int(minutes))
+            for lab, seconds in zip(time_labs, [sec_sum, sec_mean]):
+                convs = self._convert_seconds(int(seconds))
                 time_tmp = {lab: conv for lab, conv
-                            in zip(min_labs, convs)}
+                            in zip(div_labs, convs)}
                 time_conv[lab] = time_tmp
 
         return time_conv

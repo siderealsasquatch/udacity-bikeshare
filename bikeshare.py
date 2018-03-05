@@ -11,6 +11,7 @@ from pretty_print import PrettyPrint
 import bikeshare_functions as bike_funs
 
 # Init all objects
+print("Initializing program. Please wait.\n")
 bikeshare_data = CsvData()
 bikeshare_stats = DataStats(bikeshare_data.get_data())
 validator = Validate()
