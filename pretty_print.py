@@ -33,19 +33,14 @@ class PrettyPrint:
         for i, string in enumerate(header_strings_new):
             if i == 0:
                 print('#' * (longest_string + 4))
-                # print('#{s:^{fill}}#'.format(s=' ', fill=longest_string+2))
                 print('#{s:^{fill}}#'.format(s=string,
                     fill=longest_string+2))
-                # print('#{s:^{fill}}#'.format(s=' ', fill=longest_string+2))
             elif i == (num_strings-1):
-                # print('#{s:^{fill}}#'.format(s=' ', fill=longest_string+2))
                 print(('#' * (longest_string + 4)) + '\n')
             else:
                 if i == 1:
                     print('#{s:-^{fill}}#'.format(s='-',
                         fill=longest_string+2))
-                # if i != 3:
-                    # print('#{s:^{fill}}#'.format(s=' ', fill=longest_string+2))
                 print('#{s:^{fill}}#'.format(s=string,
                     fill=longest_string+2))
 
@@ -54,10 +49,7 @@ class PrettyPrint:
         Helper method to create nice headers for each group of statistics.
         '''
         header_len = len(stat_group)
-        # border_edge = '=' * (header_len + 4)
         border_edge = '=' * header_len
-        # print(border_edge)
-        # print('={s:^{fill}}='.format(s=stat_group, fill=header_len+1))
         print(stat_group)
         print(border_edge)
 
@@ -68,7 +60,6 @@ class PrettyPrint:
         '''
         non_none_dict = {k: v for k, v in stat_dict.items() if v is not None}
         non_none_dict_len = len(non_none_dict)
-        # for i, stats in enumerate(stat_dict.items()):
         for i, stats in enumerate(non_none_dict.items()):
             time, stat = stats
 
@@ -105,6 +96,18 @@ class PrettyPrint:
         '''
         Get the current filter options and assign them to the proper internal
         variables.
+
+        Parameters
+
+            city_name: Name of city as a string. Should match the names of one
+                       of the cities stored in a DataStats object.
+
+            filter_mode: 'm' for month', 'd' for day, and None to forgo
+                         filtering.
+
+            filter_by: Name of the month as a string for filter mode 'm', a list
+                       containing the name of the month and day of week for
+                       filter mode 'd'. None if data was not filtered.
         '''
         self._city_name = city_name
         self._filter_mode = filter_mode
@@ -113,6 +116,11 @@ class PrettyPrint:
     def show_start_time_stats(self, start_time_stats=None):
         '''
         Display the start time statistics using the current filter options.
+
+        Parameters
+
+            start_time_stats: Dictionary containing the statistics pertaining to
+                              start times.
         '''
         header = 'Popular Month, Day, and Hour for Start Time'
 
@@ -140,6 +148,11 @@ class PrettyPrint:
         '''
         Display the popular start and end stations for the current filter
         options.
+
+        Parameters
+
+            stations_stats: Dictionary contating statistics pertaining to
+                            start and end stations.
         '''
         header = 'Popular Start and End Stations'
         self._fancy_header_stat_group(header)
@@ -152,6 +165,11 @@ class PrettyPrint:
     def show_trip_stats(self, trip_stats=None):
         '''
         Display the most popular trip for the current filter options.
+
+        Parameters
+
+            trip_stats: Dictionary containing statistics pertaining to full
+                        trips.
         '''
         header = 'Most Popular Trip'
         self._fancy_header_stat_group(header)
@@ -165,6 +183,11 @@ class PrettyPrint:
         '''
         Display the total and average trip duration for the current filter
         options.
+
+        Parameters:
+
+            trip_duration_stats: Dictionary containing statistics pertaining to
+                                 trip duration.
         '''
         header = 'Total and Average Trip Duration'
         self._fancy_header_stat_group(header)
@@ -196,6 +219,10 @@ class PrettyPrint:
     def show_user_count_stats(self, user_count_stats=None):
         '''
         Display totals for each user type for the current filter options.
+
+        Parameters
+
+            user_count_stats: Dictionary containing totals for each user type.
         '''
         header = 'Counts of each User Type'
         self._fancy_header_stat_group(header)
@@ -208,6 +235,10 @@ class PrettyPrint:
     def show_gender_count_stats(self, gender_count_stats=None):
         '''
         Display totals for each gender for the current filter options.
+
+        Parameters
+
+            gender_count_stats: Dictionary containing totals for each gender.
         '''
         header = 'Counts of each Gender'
         self._fancy_header_stat_group(header)
@@ -221,6 +252,11 @@ class PrettyPrint:
         '''
         Display latest, earliest, and most popular birth years for the current
         filter options.
+
+        Parameters
+
+            birth_year_stats: Dictionary containing statistics related to birth
+                              years.
         '''
         header = 'Latest, Earliest, and most Popular Birth Years'
         self._fancy_header_stat_group(header)

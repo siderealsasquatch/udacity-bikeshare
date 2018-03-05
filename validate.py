@@ -37,7 +37,6 @@ class Validate:
             city_name_user = input("> ").lower()
 
             for city_name in city_names:
-                # if city_name_user in city_name.lower():
                 if city_name_user == city_name.lower().replace(' city', ''):
                     return city_name
 
@@ -53,17 +52,12 @@ class Validate:
                     "not at all? Enter None to forgo filtering.")
             filter_mode_user = input("> ").lower()
 
-            # if filter_mode_user in "month":
-            # if filter_mode_user in ["m", "month"]:
             if filter_mode_user == "month":
                 self._filter_mode = 'm'
                 return 'm'
-            # elif filter_mode_user in "day":
-            # elif filter_mode_user in ["d", "day"]:
             elif filter_mode_user == "day":
                 self._filter_mode = 'd'
                 return 'd'
-            # elif filter_mode_user in "none":
             elif filter_mode_user == "none":
                 self._filter_mode = None
                 return None
@@ -80,7 +74,6 @@ class Validate:
             month_name_user = input("> ").lower()
 
             for month_name in self._month_names:
-                # if month_name_user in month_name.lower():
                 month_name_variants = [month_name[:3].lower(),
                                        month_name.lower()]
                 if month_name_user in month_name_variants:
@@ -98,7 +91,6 @@ class Validate:
             day_name_user = input("> ").lower()
 
             for day_name in self._weekday_names:
-                # if day_name_user in day_name.lower():
                 day_name_variants = [day_name[:3].lower(),
                                      day_name[:4].lower(),
                                      day_name.lower()]

@@ -90,9 +90,6 @@ class CsvData:
 
         Parameters
 
-            chunk_size: size of the chunks of data produced by the pandas
-                        iterator.
-
             city: name of the city whose bikeshare data is to be displayed.
                   Three choices: "Chicago", "New York", and "Washington".
 

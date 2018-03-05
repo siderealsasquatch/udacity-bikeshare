@@ -16,6 +16,12 @@ class DataStats:
         Initialize DataStats object with data for all cities. This data is
         passed to the object as a dictionary of dataframes. Also initialize the
         city name, filter mode and filter criteria.
+
+        Parameters
+
+            all_city_data: Dictionary containing all dataframes of all bikeshare
+                           csv files. Should be generated using the get_data
+                           method of a CsvData object.
         '''
         self._all_city_data = all_city_data
         self._filtered_data = None
@@ -60,6 +66,13 @@ class DataStats:
     def filter_data(self, city_name, filter_mode=None):
         '''
         Filter data for the specified city by month, day, or not at all.
+
+        Parameters
+
+            city_name: Name of one of the cities whose csv data was passed to
+                       the DataStats constructor method.
+
+            filter_mode: 'm' for month, 'd' for day, or None to forgo filtering.
         '''
         self._filter_mode = filter_mode
         self._city_name = city_name
@@ -144,7 +157,7 @@ class DataStats:
         Returns
 
             time_conv: Dictionary containing the total and average trip
-            duration.
+                       duration.
         '''
         div_labs = ['Years', 'Months', 'Days', 'Hours', 'Minutes', 'Seconds']
         time_labs = ['Total', 'Average']
@@ -192,7 +205,7 @@ class DataStats:
         Returns
 
             pop_stations: Dictionary containing the most popular start and end
-            stations.
+                          stations.
         '''
         df_slice = ['Start Station', 'End Station']
 
@@ -299,6 +312,11 @@ class DataStats:
 
             filter_by: Name of month or list containing name of month and
                        weekday depending on the current filter mode.
+
+        Returns
+
+            year_stats: Dictionary containing the latest, earliest, and most
+                        popular birth years.
         '''
         if not self._check_columns_exist(['Birth Year']):
             return None
