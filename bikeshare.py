@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 #   bikeshare.py - program to interactively explore bike share data across
-#   thress U.S. cities.
+#   three U.S. cities.
 #
 
 from csv_data import CsvData
